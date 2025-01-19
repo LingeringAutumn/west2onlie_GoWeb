@@ -1,4 +1,5 @@
 # west2onlie_GoWeb
 
 > - 这是为西二2024-2025Go语言后端考核准备的仓库
-> - west2onlie's go language backend assessment warehouse
+
+##感觉没啥好介绍的，希望大家天天开心(#^.^#)##
