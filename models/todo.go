@@ -3,6 +3,7 @@ package models
 import (
 	"MyTodoList/config"
 	"fmt"
+	"gorm.io/gorm"
 )
 
 type Todo struct {
@@ -14,6 +15,7 @@ type Todo struct {
 	StartTime int64  `json:"startTime"`
 	EndTime   int64  `json:"endTime"`
 	UserID    uint   `json:"userId"`
+	View      int    `json:"view"` // 访问次数
 }
 
 func CreateTodo(todo *Todo) error {
@@ -32,6 +34,12 @@ func GetTodosByUser(userID uint, status int, keyword string, offset int, limit i
 	}
 	err := query.Offset(offset).Limit(limit).Find(&todos).Error
 	query.Count(&count)
+
+	// 更新访问次数
+	for i := range todos {
+		config.DB.Model(&todos[i]).UpdateColumn("view", gorm.Expr("view + ?", 1))
+	}
+
 	return todos, count, err
 }
 
@@ -50,4 +58,3 @@ func DeleteTodo(id uint) error {
 	}
 	return result.Error
 }
-#
