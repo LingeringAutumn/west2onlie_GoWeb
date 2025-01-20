@@ -74,11 +74,11 @@ func GetTodos(c *gin.Context) {
 	})
 }
 
-// 更新待办事项状态
+// 更新单个待办事项状态
 func UpdateTodoStatus(c *gin.Context) {
 	var req struct {
 		ID     uint `json:"id"`
-		Status int  `json:"status"`
+		Status int  `json:"status"` // 0: 未完成, 1: 已完成
 	}
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -103,7 +103,35 @@ func UpdateTodoStatus(c *gin.Context) {
 	})
 }
 
-// 删除待办事项
+// 批量更新待办事项状态
+func UpdateAllTodoStatus(c *gin.Context) {
+	var req struct {
+		TargetStatus  int `json:"targetStatus"` // 0: 未完成, 1: 已完成
+		CurrentStatus int `json:"currentStatus"`
+	}
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": http.StatusBadRequest,
+			"msg":    "无效的请求数据",
+		})
+		return
+	}
+
+	err := models.UpdateAllTodosStatus(req.CurrentStatus, req.TargetStatus)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"status": http.StatusInternalServerError,
+			"msg":    "批量更新失败",
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"status": http.StatusOK,
+		"msg":    "所有事项已更新",
+	})
+}
+
+// 删除单个待办事项
 func DeleteTodo(c *gin.Context) {
 	var req struct {
 		ID uint `json:"id"`
@@ -128,5 +156,32 @@ func DeleteTodo(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"status": http.StatusOK,
 		"msg":    "事项删除成功",
+	})
+}
+
+// 批量删除待办事项
+func DeleteTodosByStatus(c *gin.Context) {
+	var req struct {
+		Status int `json:"status"` // 0: 删除未完成, 1: 删除已完成, 2: 删除所有
+	}
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": http.StatusBadRequest,
+			"msg":    "无效的请求数据",
+		})
+		return
+	}
+
+	err := models.DeleteTodosByStatus(req.Status)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"status": http.StatusInternalServerError,
+			"msg":    "批量删除失败",
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"status": http.StatusOK,
+		"msg":    "批量事项已删除",
 	})
 }

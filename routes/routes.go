@@ -19,10 +19,12 @@ func SetupRouter() *gin.Engine {
 	// 事务相关接口（需JWT鉴权）
 	todoGroup := r.Group("/api/todos").Use(middlewares.AuthMiddleware())
 	{
-		todoGroup.POST("/", controllers.CreateTodo)                  // 创建待办事项
-		todoGroup.POST("/get", controllers.GetTodos)                 // 查询待办事项（POST接收JSON）
-		todoGroup.PUT("/updateStatus", controllers.UpdateTodoStatus) // 修改状态
-		todoGroup.DELETE("/delete", controllers.DeleteTodo)          // 删除事项
+		todoGroup.POST("/", controllers.CreateTodo)  // 创建待办事项
+		todoGroup.POST("/get", controllers.GetTodos) // 查询待办事项（POST接收JSON）
+		todoGroup.PUT("/updateStatus", controllers.UpdateTodoStatus)
+		todoGroup.PUT("/updateAllStatus", controllers.UpdateAllTodoStatus)
+		todoGroup.DELETE("/delete", controllers.DeleteTodo)
+		todoGroup.DELETE("/deleteByStatus", controllers.DeleteTodosByStatus)
 	}
 
 	return r
