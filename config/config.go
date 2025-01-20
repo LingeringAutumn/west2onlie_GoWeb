@@ -12,8 +12,9 @@ import (
 
 var DB *gorm.DB
 
+// InitDB 初始化数据库
 func InitDB() {
-	// 加载 .env 文件
+	// 加载.env文件
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatalf("加载 .env 文件失败")
@@ -25,7 +26,7 @@ func InitDB() {
 	dbHost := os.Getenv("DB_HOST")
 	dbName := os.Getenv("DB_NAME")
 
-	// 连接到 MySQL 服务器（不指定数据库）
+	// 连接到Mysql服务器（不指定数据库）
 	dsnWithoutDB := fmt.Sprintf("%s:%s@tcp(%s)/?charset=utf8mb4&parseTime=True&loc=Local",
 		dbUser, dbPass, dbHost)
 

@@ -7,6 +7,7 @@ import (
 
 var JWTSecretKey = []byte("your_secret_key")
 
+// GenerateToken 生成token
 func GenerateToken(userID uint) (string, error) {
 	claims := jwt.MapClaims{
 		"userID": userID,
@@ -16,6 +17,7 @@ func GenerateToken(userID uint) (string, error) {
 	return token.SignedString(JWTSecretKey)
 }
 
+// ParseToken 解析token
 func ParseToken(tokenString string) (uint, error) {
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		return JWTSecretKey, nil

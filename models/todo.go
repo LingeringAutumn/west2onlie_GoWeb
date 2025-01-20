@@ -18,12 +18,12 @@ type Todo struct {
 	View      int    `json:"view"` // 访问次数
 }
 
-// 创建事务
+// CreateTodo 创建事务
 func CreateTodo(todo *Todo) error {
 	return config.DB.Create(todo).Error
 }
 
-// 查询事务
+// GetTodosByUser 查询事务
 func GetTodosByUser(userID uint, status int, keyword string, offset int, limit int) ([]Todo, int64, error) {
 	var todos []Todo
 	var count int64
@@ -45,7 +45,7 @@ func GetTodosByUser(userID uint, status int, keyword string, offset int, limit i
 	return todos, count, err
 }
 
-// 更新单个待办事项状态
+// UpdateTodoStatus 更新单个待办事项状态
 func UpdateTodoStatus(id uint, status int) error {
 	result := config.DB.Model(&Todo{}).Where("id = ?", id).Update("status", status)
 	if result.Error != nil {
@@ -57,7 +57,7 @@ func UpdateTodoStatus(id uint, status int) error {
 	return nil
 }
 
-// 批量更新事项状态
+// UpdateAllTodosStatus 批量更新事项状态
 func UpdateAllTodosStatus(currentStatus, targetStatus int) error {
 	result := config.DB.Model(&Todo{}).Where("status = ?", currentStatus).Update("status", targetStatus)
 	if result.Error != nil {
@@ -69,7 +69,7 @@ func UpdateAllTodosStatus(currentStatus, targetStatus int) error {
 	return nil
 }
 
-// 删除单个待办事项
+// DeleteTodo 删除单个待办事项
 func DeleteTodo(id uint) error {
 	result := config.DB.Delete(&Todo{}, id)
 	if result.Error != nil {
@@ -81,7 +81,7 @@ func DeleteTodo(id uint) error {
 	return nil
 }
 
-// 批量删除待办事项
+// DeleteTodosByStatus 批量删除待办事项
 func DeleteTodosByStatus(status int) error {
 	var result *gorm.DB
 	if status == 2 {

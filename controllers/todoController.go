@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-// 创建待办事项
+// CreateTodo 创建待办事项
 func CreateTodo(c *gin.Context) {
 	var todo models.Todo
 	if err := c.ShouldBindJSON(&todo); err != nil {
@@ -16,7 +16,7 @@ func CreateTodo(c *gin.Context) {
 		})
 		return
 	}
-	userID, _ := c.Get("userID") // 从JWT中获取用户ID
+	userID, _ := c.Get("userID") // 从jwt中获取用户id
 	todo.UserID = userID.(uint)
 
 	if err := models.CreateTodo(&todo); err != nil {
@@ -33,7 +33,7 @@ func CreateTodo(c *gin.Context) {
 	})
 }
 
-// 获取待办事项（支持分页、关键词搜索、状态筛选）
+// GetTodos 获取待办事项：支持分页、关键词搜索、状态筛选
 func GetTodos(c *gin.Context) {
 	var req struct {
 		Status  int    `json:"status"`
@@ -74,7 +74,7 @@ func GetTodos(c *gin.Context) {
 	})
 }
 
-// 更新单个待办事项状态
+// UpdateTodoStatus 更新单个待办事项状态
 func UpdateTodoStatus(c *gin.Context) {
 	var req struct {
 		ID     uint `json:"id"`
@@ -103,7 +103,7 @@ func UpdateTodoStatus(c *gin.Context) {
 	})
 }
 
-// 批量更新待办事项状态
+// UpdateAllTodoStatus 批量更新待办事项状态
 func UpdateAllTodoStatus(c *gin.Context) {
 	var req struct {
 		TargetStatus  int `json:"targetStatus"` // 0: 未完成, 1: 已完成
@@ -131,7 +131,7 @@ func UpdateAllTodoStatus(c *gin.Context) {
 	})
 }
 
-// 删除单个待办事项
+// DeleteTodo 删除单个待办事项
 func DeleteTodo(c *gin.Context) {
 	var req struct {
 		ID uint `json:"id"`
@@ -159,7 +159,7 @@ func DeleteTodo(c *gin.Context) {
 	})
 }
 
-// 批量删除待办事项
+// DeleteTodosByStatus 批量删除待办事项
 func DeleteTodosByStatus(c *gin.Context) {
 	var req struct {
 		Status int `json:"status"` // 0: 删除未完成, 1: 删除已完成, 2: 删除所有

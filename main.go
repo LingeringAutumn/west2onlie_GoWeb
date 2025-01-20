@@ -7,6 +7,7 @@ import (
 	"fmt"
 )
 
+// 主入口
 func main() {
 	// 初始化数据库（自动创建数据库）
 	config.InitDB()

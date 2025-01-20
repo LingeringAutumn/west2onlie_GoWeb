@@ -6,6 +6,7 @@ import (
 	"net/http"
 )
 
+// AuthMiddleware 鉴权中间件
 func AuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		tokenString := c.GetHeader("Authorization")

@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-// 用户注册
+// Register 用户注册
 func Register(c *gin.Context) {
 	var user models.User
 	if err := c.ShouldBindJSON(&user); err != nil {
@@ -40,7 +40,7 @@ func Register(c *gin.Context) {
 	})
 }
 
-// 用户登录
+// Login 用户登录
 func Login(c *gin.Context) {
 	var loginReq struct {
 		Username string `json:"username"`
