@@ -45,33 +45,55 @@ func GetTodosByUser(userID uint, status int, keyword string, offset int, limit i
 	return todos, count, err
 }
 
-// 更新待办事项状态
+// 更新单个待办事项状态
 func UpdateTodoStatus(id uint, status int) error {
-	return config.DB.Model(&Todo{}).Where("id = ?", id).Update("status", status).Error
+	result := config.DB.Model(&Todo{}).Where("id = ?", id).Update("status", status)
+	if result.Error != nil {
+		return fmt.Errorf("更新失败: %v", result.Error)
+	}
+	if result.RowsAffected == 0 {
+		return fmt.Errorf("事项不存在")
+	}
+	return nil
 }
-
-/*func DeleteTodo(id uint) error {
-	return config.DB.Where("id = ?", id).Delete(&Todo{}).Error
-}*/
 
 // 批量更新事项状态
 func UpdateAllTodosStatus(currentStatus, targetStatus int) error {
-	return config.DB.Model(&Todo{}).Where("status = ?", currentStatus).Update("status", targetStatus).Error
+	result := config.DB.Model(&Todo{}).Where("status = ?", currentStatus).Update("status", targetStatus)
+	if result.Error != nil {
+		return fmt.Errorf("批量更新失败: %v", result.Error)
+	}
+	if result.RowsAffected == 0 {
+		return fmt.Errorf("未找到符合条件的事项")
+	}
+	return nil
 }
 
 // 删除单个待办事项
 func DeleteTodo(id uint) error {
-	result := config.DB.Where("id = ?", id).Delete(&Todo{})
+	result := config.DB.Delete(&Todo{}, id)
+	if result.Error != nil {
+		return fmt.Errorf("删除失败: %v", result.Error)
+	}
 	if result.RowsAffected == 0 {
 		return fmt.Errorf("事项不存在")
 	}
-	return result.Error
+	return nil
 }
 
 // 批量删除待办事项
 func DeleteTodosByStatus(status int) error {
+	var result *gorm.DB
 	if status == 2 {
-		return config.DB.Where("1=1").Delete(&Todo{}).Error
+		result = config.DB.Delete(&Todo{})
+	} else {
+		result = config.DB.Where("status = ?", status).Delete(&Todo{})
 	}
-	return config.DB.Where("status = ?", status).Delete(&Todo{}).Error
+	if result.Error != nil {
+		return fmt.Errorf("批量删除失败: %v", result.Error)
+	}
+	if result.RowsAffected == 0 {
+		return fmt.Errorf("未找到符合条件的事项")
+	}
+	return nil
 }
