@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-var jwtSecret = []byte("your_secret_key")
+var jwtSecret = []byte("SecretKey")
 
 // GenerateToken 生成token
 func GenerateToken(userID uint) (string, error) {
